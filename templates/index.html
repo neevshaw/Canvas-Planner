@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CanvasPlanner</title>
+  <link rel="icon" type="image/x-icon" href="/static/logo.png">
+  <link rel="manifest" href="/static/manifest.json">
+
+  <!-- iOS-specific PWA requirements -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CanvasPlanner">
+
+  <link rel="apple-touch-icon" href="/static/logo.png">
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f0f0f0;
+    }
+
+    /* ORIGINAL DESKTOP BUTTON — UNCHANGED */
+    #launchButton {
+      height: 75vh;
+      width: 75vh;
+      border-radius: 50%;
+      background-color: red;
+      color: white;
+      font-size: 10vh;
+      font-weight: bold;
+      border: black 4px solid;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    #launchButton:active:not(:disabled) {
+      transform: scale(0.95);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    #launchButton.disabled {
+      cursor: default;
+      background-color: gray;
+    }
+
+    /* 📱 MOBILE OVERRIDE (ONLY activates on iPhone-sized screens) */
+    @media (max-width: 600px) {
+      #launchButton {
+        width: 72vw;
+        height: 72vw;
+        font-size: 12vw; /* Scaled text but same look */
+      }
+    }
+  </style>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/static/service-worker.js");
+    }
+  </script>
+
+</head>
+<body>
+
+  <button id="launchButton">Make Planner</button>
+
+  <script>
+    const button = document.getElementById('launchButton');
+
+    button.addEventListener('click', async () => {
+      button.disabled = true;
+      button.classList.add('disabled');
+      button.textContent = "Creating...";
+
+      try {
+        const response = await fetch(
+          "REDACTED_FLOW_URL",
+          { method: "POST" }
+        );
+
+        const data = await response.json();
+        console.log("Response:", data);
+
+        button.textContent = "Done!";
+        button.style.backgroundColor = "green";
+
+      } catch (error) {
+        console.error("Error:", error);
+        button.textContent = "Failed";
+        button.style.backgroundColor = "#5e0802";
+      }
+    });
+  </script>
+
+</body>
+</html>
