@@ -16,7 +16,7 @@ import traceback
 from_zone = tz.gettz("UTC")
 to_zone = tz.gettz("America/Los_Angeles")
 
-load_dotenv("/home/canvasPlanner/mysite/.env")
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env"))
 
 
 # Set to None for normal behavior, or use MM/DD/YYYY (for example, "09/15/2026")
@@ -472,8 +472,7 @@ def get_canvas_assignments(
         False,
     )
 
-    # The original Canvas module iteration is preserved. A limit applies
-    # only when explicitly configured (never for Advanced Biology).
+    # Only scan the first N modules when module_limit is set
     module_limit = search_settings.get("module_limit")
 
     for module_index, module in enumerate(
@@ -719,7 +718,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
+    return render_template("index.html", flow_url=os.getenv("FLOW_URL"))
 
 
 @app.route(
@@ -821,8 +820,7 @@ def update():
 
 @app.errorhandler(Exception)
 def handle_error(e):
-    # Flask uses HTTP exceptions for ordinary 404/405 responses.
-    # Preserve their original status codes instead of reporting 500.
+    # Let normal 404/405 responses through instead of turning them into 500s
     if isinstance(e, HTTPException):
         return e
 

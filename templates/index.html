@@ -24,7 +24,6 @@
       background-color: #f0f0f0;
     }
 
-    /* ORIGINAL DESKTOP BUTTON — UNCHANGED */
     #launchButton {
       height: 75vh;
       width: 75vh;
@@ -49,12 +48,12 @@
       background-color: gray;
     }
 
-    /* 📱 MOBILE OVERRIDE (ONLY activates on iPhone-sized screens) */
+    /* Mobile */
     @media (max-width: 600px) {
       #launchButton {
         width: 72vw;
         height: 72vw;
-        font-size: 12vw; /* Scaled text but same look */
+        font-size: 12vw;
       }
     }
   </style>
@@ -80,7 +79,7 @@
 
       try {
         const response = await fetch(
-          "REDACTED_FLOW_URL",
+          {{ flow_url | tojson }},
           { method: "POST" }
         );
 
